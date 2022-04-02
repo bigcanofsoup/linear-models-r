@@ -1,0 +1,148 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+Import command: source(dataframe)
+
+Dimensions: dim(dataframe)
+  This will give the rows and columns of the data
+  
+Names of the Columns: names(dataframe)
+
+To call a certain row/column, use (dataframe name)$(variable); without parentheses
+
+  This can be avoided by first running "attach(dataframe name)"
+  Attach sepeartes the column name from the data frame and is an easy way to refer to the variable name
+  
+  Ex:
+  attach(dataframe)
+  title1
+  title2
+
+This only calls the raw numbers and observations of the variables.
+
+To plot information on a graph:
+
+plot(x, y, type, color, etc.)
+  type = p: scatterplot
+  type = l: line chart
+  
+To get help on a function/method: place a  "?" in front of the call
+
+Variables can also be added with one another:
+  Ex:
+  plot(year, boys+girls, type = "p") This will calculate the total amount of children in the given dataframe
+  plot(year, boys/girls, type = "p") This will compare the number of boys to girls; value >1 means more boys than girls
+  plot(year, boys/(girls+boys), type = "p") This will compare the proportion of boys to girls; larger numbers mean that there     are more boys than girls
+  
+To figure out the points where the two varaibels are equal, greater, less than, etc.
+  (variable2) =, <, >, etc. (variable2)
+  
+Hashtags can change the types of text
+    ##
+
+T-Test/Confidence Intervals
+
+ttestout = t.test(fresh, stred, alternative = 'two-tailed', var,equal = TRUE)
+
+ttestout$conf.int
+
+Default critical value is 0.05.
+
+Is 0 in the confidence interval? If it is not, then it is possible to conclude that Ho is not true (u1 = u2 so u1 - u2 should equal 0)
+
+May reject on a two-tailed test, but on a one-sided t-test, it can be different
+
+
+```{r}
+pt(3.956, 89, lower.tail= FALSE)
+```
+
+
+```{r}
+qf(0.05, 3, 20, lower.tail = FALSE)
+pf(4.85, 3, 20, ncp=0, lower.tail=FALSE)
+help(qf)
+```
+```{r}
+a = 25 * 156.25
+b = 25 * 128.84
+c = a+b
+d = c/50
+e = sqrt(d)
+f = e * sqrt(1/13)
+g = 3.7/f
+
+qt(0.025, 50, lower.tail = FALSE)
+
+pt(-1.117, 50)
+2 *0.13467
+```
+```{r}
+a = 3.6 + 0.27 + 0.29 + 4.55 + 2.6 + 2.29 + 2.4 + 0.73 + 3.15 + 3.21 + 0.88 + 1.35 + 7.35
+b = a/13
+c = 1.36 + 0 + 0 + 1.79 + 2.04 + 3.14 + 2.72 + 0.24 + 1.57 + 0.43 + 0.28 + 1.09 + 4.92
+d = c/13
+b - d
+qt(0.05, 12, lower.tail = FALSE)
+pt
+
+2 * pf(2.214, 25, 25, lower.tail = FALSE)
+
+pf(1.57, 11, 11, lower.tail = FALSE)
+
+qf(0.05, 2, 25, lower.tail = FALSE)
+
+pf(8.9, 2, 25, lower.tail = FALSE)
+
+pf(1480.22, 4, 495, lower.tail = FALSE)
+
+qf(0.025, 25, 25, lower.tail = FALSE)
+
+pf(2.48, 11, 11, lower.tail = FALSE)
+
+qf(0.01, 11, 11, lower.tail = FALSE)
+
+qf(0.05, 11, 11, lower.tail = FALSE)
+
+pf(9.26, 2, 26, lower.tail = FALSE)
+```
+
+
+
+
+
+
+
+
+```{r}
+qf(.025, 7, 7, lower.tail = FALSE)
+pf(5.87, 7, 7, lower.tail = FALSE)
+```
+
+
+```{r}
+GPA = read.csv('GPA1.csv')
+attach(GPA)
+mean(GPA$Y)
+sd(GPA$X)
+GPA[order(GPA$X),]
+GPA.fit <- lm(Y~X, data = GPA)
+summary(GPA.fit)
+qt(0.95, 118, lower.tail = FALSE)
+qf(0.05, 2, 23)
+
+
+
+```
+
+```{r}
+plastics = read.csv('Plastic.csv')
+attach(plastics)
+plastics.fit <- lm(Y~X, data = plastics)
+summary(plastics.fit)
+mean(plastics$X)
+
+```
+
+

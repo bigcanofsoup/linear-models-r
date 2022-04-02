@@ -1,0 +1,50 @@
+---
+title: "Hwk 4-4"
+author: "Andrew Guo"
+date: "10/7/2021"
+output: pdf_document
+---
+4.)
+
+(a) Read the data using the read.csv function
+
+```{r}
+crimeLSRL = read.csv("Hwk 4-4.csv")
+```
+
+(b) Fit a linear model using the lm function with "Number of Casino Employees" as the predictor and "Crime Rate" as the response. Use the summary function to output the resulting fit.
+
+```{r}
+attach(crimeLSRL)
+crimeLSRL.fit <- lm(Crime.Rate~Number.of.Casino.Employees, data = crimeLSRL)
+summary(crimeLSRL.fit)
+```
+
+(c) Plot the data along with the regression line
+
+```{r}
+plot(Number.of.Casino.Employees, Crime.Rate)
+abline(crimeLSRL.fit, lwd = 3, col = 'purple')
+```
+
+(d) Use the output to report the estimate for variance(epsilon) = theta^2
+
+In the summary() output, we see that the residual standard error is 0.3446. Because the residual standard error is the square root of the sample variance, and because the sample variance is also the mean square error, which is also an unbiased estimator for theta^2, then the square of the residual standard error would also be the expected value of epsilon. 
+
+Thus, we have v(epsilon) = 0.3446^2 = 0.11943836.
+
+(e) Predict the crime rate when there are 25,000 casino employees
+
+Based on our calculations of b1 and b2, our linear regression equation is approximately:
+
+y = 0.115x - 0.867
+
+In Problem 2, we had calculated that the y-intercept (b0) was -0.872, however, this value was reached by using a rounded b1 value of 0.115. In the summary() function, we notice a closer approximation for b1, which is 0.11493. When this number is used in place of 0.115 in the process of solving for b0, we obtain the y-intercept of approximately -0.869. Therefore, the R-calculated value will be used for the intercept. 
+
+We are being asked to estimate the crime rate (y) with 25,000 casino employees (x). So we substitute x with its respective value to calculate y. Note that the number of casino employees is denoted as in thousands, so the value being substituted is not 25,000, but rather, 25. Therefore, we calculate y to be:
+
+y = 0.11493(25) - 0.86977 = 2.00348
+
+This means that the expected crime rate when there are 25,000 casino employees would be 2.00348 (per 1,000 population).
+
+

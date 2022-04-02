@@ -1,0 +1,146 @@
+---
+title: "HWK6 - Analysis of Advertising Data"
+author: "Professor Soares"
+#date: "10/30/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align='center')
+library(lawstat)
+```
+
+## Introduction
+
+The Advertising data set consists of the sales of that product in 200 different markets, along with advertising budgets for the product in each of those markets for three different media: TV, radio, and newspaper. 
+
+It is not possible for our client to directly increase sales of the product. On the other hand, they can control the advertising expenditure in each of the three media. Therefore, if we determine that there is an association between advertising and sales, then we can instruct our client to adjust advertising budgets, thereby indirectly increasing sales. In other words, our goal is to develop an accurate model that can be used to predict sales on the basis of the three media budgets.
+
+First, we need to read in the data and process it.
+
+```{r, echo = TRUE}
+Advertising <- read.csv("Advertising.csv")
+attach(Advertising)
+```
+
+## Building a SLR Model: Sales vs TV
+
+Now, build a simple linear model with Y = sales (in thousands of units) and X = TV advertising budget in (thousands of dollars).
+
+```{r, echo = TRUE}
+lm.fit.TV = lm(sales~TV)
+summary(lm.fit.TV)
+```
+
+Here are some observations regarding the fit:
+
+- Since the p-value < .05, we can conclude that `TV` and `sales` have a linear association.
+
+Now we plot the data along with the fitted line.
+
+```{r, echo = TRUE, fig.height = 3, fig.width = 4}
+par(mfrow=c(1,1))
+plot(TV,sales)
+abline(lm.fit.TV, col='red')
+```
+
+- The plot confirms our analysis of a linear association between `TV` and `sales`, since as `TV` advertising expenditure increases, `sales` also increases.
+
+## Checking Diagnostics: Sales vs TV
+
+Look at the diagnostic plots to determine if there are any issues.
+
+```{r, echo = TRUE}
+par(mfrow=c(1,1))
+plot(lm.fit.TV, which = c(1))
+plot(lm.fit.TV, which = c(2))
+plot(lm.fit.TV, which = c(5))
+```
+
+- The residuals plot shows no curvature, thus a linear model seems reasonable for this data. However, the data appear to be heteroscedastic as indicated by fanning of the residuals.
+- The Q-Q plot indicates that normality of the `sales` data may be a reasonable assumption, and the observed and expected quantiles track in a linear fashion.
+- The standardized residuals versus leverage plot indicate that none of the observations appear to be outliers or high leverage points.
+
+Let's actually test the assumptions of normality and homoscedasticity:
+
+```{r, echo = TRUE}
+boxplot(sales,data=Advertising, ylab="Sales")
+hist(sales)
+shapiro.test(sales)
+```
+- The boxplot indicates the data may be normally distributed. 
+- The histogram reveals some asymmetry though.
+- Finally, the Shapiro-Wilk test confirms the data are NOT normally distributed, as the p-value < 0.05. Thus, we reject the null hypothesis that the data are normally distributed.
+- There is no need to test homoscedasticity while the non-normality issue is present.
+
+## Remediation of Issues: Sales vs TV
+
+We observed that the `sales` data failed both normality and homoscedasticity. Thus, we need to apply a transformation of `sales` before proceeding with the SLR model. We first try the mapping:
+
+\[
+Y' = \sqrt{Y}
+\]
+
+###  Building a SLR Model: sqrt(Sales) vs TV
+
+```{r, echo = TRUE}
+lm.fit.TV2 = lm(sqrt(sales)~TV)
+summary(lm.fit.TV2)
+```
+- Since the p-value < .05, we can conclude that `TV` and `sqrt(sales)` have a linear association.
+
+Now we plot the data along with the fitted line.
+
+```{r, echo = TRUE, fig.height = 3, fig.width = 4}
+par(mfrow=c(1,1))
+plot(TV,sqrt(sales))
+abline(lm.fit.TV2, col='red')
+```
+
+- The plot confirms our analysis of a linear association between `TV` and `sqrt(sales)`, since as `TV` advertising expenditure increases, `sqrt(sales`) also increases.
+
+### Checking Diagnostics: sqrt(Sales) vs TV
+
+Look at the diagnostic plots to determine if there are any issues.
+
+```{r, echo = TRUE}
+par(mfrow=c(1,1))
+plot(lm.fit.TV2, which = c(1))
+plot(lm.fit.TV2, which = c(2))
+plot(lm.fit.TV2, which = c(5))
+```
+
+- The residuals plot shows no curvature, thus a linear model seems reasonable for this data. However, the data appear to be less heteroscedastic than before.
+- The Q-Q plot indicates that normality of the `sales` data may be a reasonable assumption, and the observed and expected quantiles track in a linear fashion.
+- The standardized residuals versus leverage plot indicate that none of the observations appear to be outliers or high leverage points.
+
+Let's actually test the assumptions of normality and homoscedasticity:
+
+```{r, echo = TRUE}
+boxplot(sqrt(sales),data=Advertising, ylab="sqrt(Sales)")
+hist(sqrt(sales))
+shapiro.test(sqrt(sales))
+```
+
+- The boxplot indicates the data may be normally distributed. 
+- The histogram reveals some asymmetry though.
+- Finally, the Shapiro-Wilk test no longer confirms non-normality, as the p-value >= 0.05. Thus, we fail to reject the null hypothesis that the data are normally distributed.
+
+Finally, we test homoscedasticity:
+
+```{r, echo = TRUE}
+Advertising$Group = rep("Group1",200)
+indexTV = (TV > median(TV))
+Advertising$Group[indexTV] = "Group2"
+levene.test(sqrt(sales),Advertising$Group , location = c("median"))
+```
+
+- We note that the p-value >= 0.05, so we fail to reject the null hypothesis that the variance is constant across levels of `TV`.
+
+## Conclusions
+
+- There is a linear association between `sqrt(sales)` and `TV` expenditure.
+- As TV advertising expenditure increases by $1,000, sqrt(sales) increases by 0.0065781.
+- A linear model is appropriate between `TV` and `sqrt(sales)`.
+- The data are normally distributed and homoscedastic.
+- There are no clear outliers or high leverage points in the data set.
